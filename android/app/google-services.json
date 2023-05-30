@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874115683943",
+    "project_id": "manager-app-cd4e3",
+    "storage_bucket": "manager-app-cd4e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874115683943:android:fb219da3f2f868701926c2",
+        "android_client_info": {
+          "package_name": "com.example.manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1Saa2tsIxyWlGIWAKP5YtxhwLodNpmzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

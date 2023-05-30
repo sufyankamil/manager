@@ -263,23 +263,39 @@ class _SignUpState extends State<SignUp> {
                 )),
           ),
           const SizedBox(height: 20),
+          // Already have an account button
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(Constants.signUpScreenAlreadyHaveAccount,
+                  style: TextStyle(fontSize: 16)),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Constants.signInRoute);
+                },
+                child: const Text(Constants.loginButton,
+                    style: TextStyle(fontSize: 18, color: Colors.blue)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
           // Skip this step button
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                isSkipTap = true;
-              });
-              Navigator.pushNamed(context, Constants.homeRoute);
-            },
-            child: Text(
-              Constants.signUpScreenSkipButton,
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.05,
-                  color: isSkipTap ? Colors.blue : Colors.black),
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
+          // GestureDetector(
+          //   onTap: () {
+          //     setState(() {
+          //       isSkipTap = true;
+          //     });
+          //     Navigator.pushNamed(context, Constants.homeRoute);
+          //   },
+          //   child: Text(
+          //     Constants.signUpScreenSkipButton,
+          //     style: TextStyle(
+          //         fontSize: MediaQuery.of(context).size.width * 0.05,
+          //         color: isSkipTap ? Colors.blue : Colors.black),
+          //     textAlign: TextAlign.center,
+          //     overflow: TextOverflow.ellipsis,
+          //   ),
+          // )
         ],
       ),
     ));

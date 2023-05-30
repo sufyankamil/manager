@@ -5,28 +5,28 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../common/constants.dart';
 
-class EmailAuth extends StatefulWidget {
-  const EmailAuth({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   // route for navigation to this screen
-  static const String route = Constants.emailAuthRoute;
+  static const String route = Constants.signInRoute;
 
   @override
-  State<EmailAuth> createState() => _EmailAuthState();
+  State<Login> createState() => _LoginState();
 }
 
-class _EmailAuthState extends State<EmailAuth> {
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
 
   final _passwordController = TextEditingController();
 
+  final storage = const FlutterSecureStorage();
+
   bool _isObscure = true;
 
   bool isChecked = false;
-
-  final storage = const FlutterSecureStorage();
 
   @override
   void dispose() {
@@ -65,7 +65,7 @@ class _EmailAuthState extends State<EmailAuth> {
                         FontAwesomeIcons.envelope,
                       ),
                       const SizedBox(height: 20),
-                      const Text(Constants.signUpWithEmailButton,
+                      const Text(Constants.loginScreenTitle,
                           style: TextStyle(fontSize: 20)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -112,58 +112,29 @@ class _EmailAuthState extends State<EmailAuth> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // terms and conditions
+                      ElevatedButton(
+                        onPressed: _submitForm,
+                        child: const Text(Constants.loginButton),
+                      ),
+                      const SizedBox(height: 20),
+                      // Dont have an account? Sign up
                       Row(
-                        children: <Widget>[
-                          Checkbox(
-                            value: isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                isChecked = value!;
-                              });
-                            },
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            Constants.dontHaveAccount,
+                            style: TextStyle(fontSize: 16),
                           ),
-                          const SizedBox(width: 6),
-                          GestureDetector(
-                            onTap: () {
-                              // termsAndContions(context);
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(Constants.signUpRoute);
                             },
-                            child: SizedBox(
-                              width: c_width,
-                              child: Text(
-                                Constants.agreementContent,
-                                maxLines: 5,
-                                overflow: TextOverflow.visible,
-                                style: isChecked
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: Colors.blue,
-                                        )
-                                    : Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: Colors.grey,
-                                          fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width >
-                                                  400
-                                              ? 16
-                                              : 14,
-                                        ),
-                              ),
-                            ),
+                            child: const Text(Constants.signUpButton,
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: 18)),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: () {
-                          _submitForm(context);
-                        },
-                        child: const Text('Create Account'),
                       ),
                     ],
                   ),
@@ -176,45 +147,60 @@ class _EmailAuthState extends State<EmailAuth> {
     ));
   }
 
-  Future<void> _submitForm(BuildContext context) async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      if (!isChecked) {
-        _showAlertDialog(context);
-      } else {
-        try {
-          // Perform account creation logic here
-          String email = _emailController.text;
-          String password = _passwordController.text;
-          // Call an API or perform any other necessary actions
-          print('Creating account with email: $email and password: $password');
-          UserCredential userCredential = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(email: email, password: password);
-          await storage.write(
-              key: Constants.userTokenKey, value: userCredential.user!.uid);
-          print(userCredential);
-          if (userCredential != null) {
-            if (context.mounted) {
-              setState(() {
-                _emailController.clear();
-                _passwordController.clear();
-              });
-              Navigator.of(context).pushNamed(Constants.homeRoute);
-            }
-          } else {
-            print('User not created');
-          }
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'weak-password') {
-            _showWeakPasswordDialog(context);
-          } else if (e.code == 'email-already-in-use') {
-            _showAccountExistsDialog(context);
-          }
-        } catch (e) {
-          print(e);
+
+      try {
+        // Perform account creation logic here
+        String email = _emailController.text;
+        String password = _passwordController.text;
+        // Call an API or perform any other necessary actions
+        print('Creating account with email: $email and password: $password');
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+        await storage.write(
+            key: Constants.userTokenKey, value: userCredential.user!.uid);
+        print(userCredential);
+        if (userCredential != null) {
+          setState(() {
+            _emailController.clear();
+            _passwordController.clear();
+          });
+          Navigator.of(context).pushNamed(Constants.homeRoute);
+        } else {
+          print('User not created');
         }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          _showUserNotFoundDialog(context);
+        } else if (e.code == 'email-already-in-use') {
+          _showAccountExistsDialog(context);
+        }
+      } catch (e) {
+        print(e);
       }
     }
+  }
+
+  // when user not found
+  void _showUserNotFoundDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(Constants.userNotFound),
+          content: const Text(Constants.userNotFoundMessage),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(Constants.ok)),
+          ],
+        );
+      },
+    );
   }
 
   // dialog to show terms and conditions of the app
@@ -237,7 +223,7 @@ class _EmailAuthState extends State<EmailAuth> {
     );
   }
 
-  // when account already exists
+  // function when account already exists
   void _showAccountExistsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -245,26 +231,6 @@ class _EmailAuthState extends State<EmailAuth> {
         return AlertDialog(
           title: const Text(Constants.accountExists),
           content: const Text(Constants.accountExistsMessage),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(Constants.ok)),
-          ],
-        );
-      },
-    );
-  }
-
-  // when password is too weak
-  void _showWeakPasswordDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(Constants.weekPassword),
-          content: const Text(Constants.weekPasswordMessage),
           actions: [
             TextButton(
                 onPressed: () {

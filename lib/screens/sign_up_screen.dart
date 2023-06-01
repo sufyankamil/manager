@@ -16,7 +16,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool isGoogleHover = false;
 
-  bool isFacebookHover = false;
+  bool isPhone = false;
 
   bool isEmailHover = false;
 
@@ -123,31 +123,32 @@ class _SignUpState extends State<SignUp> {
                       // Facebook Sign Up Button
                       GestureDetector(
                         onTap: () {
-                          // Navigator.pushNamed(context, Constants.homeRoute);
+                          Navigator.pushNamed(
+                              context, Constants.phoneAuthRoute);
                         },
                         onTapDown: (details) {
                           setState(() {
-                            isFacebookHover = true;
+                            isPhone = true;
                           });
                         },
                         onTapCancel: () {
                           setState(() {
-                            isFacebookHover = false;
+                            isPhone = false;
                           });
                         },
                         onTapUp: (details) {
                           setState(() {
-                            isFacebookHover = false;
+                            isPhone = false;
                           });
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
-                          transform: isFacebookHover
+                          transform: isPhone
                               ? Matrix4.translationValues(0, -5, 0)
                               : Matrix4.translationValues(0, 0, 0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: isFacebookHover
+                            boxShadow: isPhone
                                 ? [
                                     BoxShadow(
                                       color: Colors.black.withOpacity(0.2),
@@ -168,12 +169,12 @@ class _SignUpState extends State<SignUp> {
                               child: Row(
                                 children: [
                                   const Icon(
-                                    FontAwesomeIcons.facebook,
+                                    FontAwesomeIcons.phone,
                                     color: Colors.white,
                                   ),
                                   const SizedBox(width: 20),
                                   Text(
-                                    Constants.signUpScreenFacebookButton,
+                                    Constants.signupWithPhone,
                                     style: TextStyle(
                                         fontSize:
                                             MediaQuery.of(context).size.width *

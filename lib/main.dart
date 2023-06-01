@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:manager/screens/email_auth.dart';
 import 'package:manager/screens/home.dart';
 import 'package:manager/screens/login_screen.dart';
+import 'package:manager/screens/phone_auth.dart';
 import 'package:manager/screens/sign_up_screen.dart';
 import 'package:manager/screens/splash.dart';
 
@@ -11,7 +12,6 @@ import 'common/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -81,12 +81,13 @@ class MyApp extends StatelessWidget {
                 Constants.signUpRoute: (context) => const SignUp(),
                 Constants.signInRoute: (context) => const Login(),
                 Constants.emailAuthRoute: (context) => const EmailAuth(),
+                Constants.phoneAuthRoute: (context) => const PhoneAuth(),
                 Constants.homeRoute: (context) => const Home(),
               },
             );
           }
 
-          // Otherwise, show something whilst waiting for initialization to complete
+          // Otherwise, show something message or circularbar while waiting for initialization to complete
           return MaterialApp(
             title: Constants.appName,
             debugShowCheckedModeBanner: false,
@@ -104,20 +105,5 @@ class MyApp extends StatelessWidget {
             ),
           );
         });
-
-    // return MaterialApp(
-    //   title: Constants.appName,
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: const Splash(),
-    //   routes: {
-    //     Constants.signUpRoute: (context) => const SignUp(),
-    //     Constants.signInRoute: (context) => const Login(),
-    //     Constants.emailAuthRoute: (context) => const EmailAuth(),
-    //     Constants.homeRoute: (context) => const Home(),
-    //   },
-    // );
   }
 }

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 
 import '../common/constants.dart';
 
@@ -32,6 +33,7 @@ class _LoginState extends State<Login> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+
     super.dispose();
   }
 
@@ -41,108 +43,91 @@ class _LoginState extends State<Login> {
 
     return SafeArea(
         child: Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Form(
-            key: _formKey,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 50),
+        height: MediaQuery.of(context).size.height,
+        width: c_width,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Lottie.asset(Constants.loginLogo,
+                  width: MediaQuery.of(context).size.width),
+              const Text(Constants.loginScreenTitle,
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
                   ),
-                  elevation: 10,
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 5),
-                      const Icon(
-                        FontAwesomeIcons.envelope,
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(Constants.loginScreenTitle,
-                          style: TextStyle(fontSize: 20)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: _passwordController,
-                          obscureText: _isObscure,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _isObscure = !_isObscure;
-                                });
-                              },
-                              icon: Icon(
-                                _isObscure
-                                    ? FontAwesomeIcons.solidEyeSlash
-                                    : FontAwesomeIcons.eye,
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _submitForm,
-                        child: const Text(Constants.loginButton),
-                      ),
-                      const SizedBox(height: 20),
-                      // Dont have an account? Sign up
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            Constants.dontHaveAccount,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(Constants.signUpRoute);
-                            },
-                            child: const Text(Constants.signUpButton,
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: 18)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
               ),
-            ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: _isObscure,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
+                      icon: Icon(
+                        _isObscure
+                            ? FontAwesomeIcons.solidEyeSlash
+                            : FontAwesomeIcons.eye,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: const Text(Constants.loginButton),
+              ),
+              const SizedBox(height: 20),
+              // Dont have an account? Sign up
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    Constants.dontHaveAccount,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(Constants.signUpRoute);
+                    },
+                    child: const Text(Constants.signUpButton,
+                        style: TextStyle(color: Colors.blue, fontSize: 18)),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     ));
   }
